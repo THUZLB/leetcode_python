@@ -32,3 +32,36 @@ class Solution:
         return result
 
 # Manacher马拉车算法
+class Solution:
+    def longestPalindrome(self, s: str) -> str:
+        strLen = len(s)
+        if strLen == 0:
+             return ''
+        
+        sNewList = ['$','#']
+
+        for i in range(strLen):
+            sNewList.append(s[i])
+            sNewList.append('#')
+        sNewList.append('\0')
+
+        strLenNew = 2 * strLen + 3
+        maxRight = 0
+        maxRLoc = 0
+        R = [0] * strLenNew
+
+        for i in range(strLenNew-1):
+            R[i] = min(R[2*maxRLoc-i], maxRight-i) if maxRight > i else 1
+            while sNewList[i + R[i]] == sNewList[i - R[i]]:
+                R[i] += 1
+            if (i + R[i] > maxRight):
+                maxRight = i + R[i]
+                maxRLoc = i
+
+        maxR = max(R)
+        maxLoc = R.index(maxR)
+        
+        sFind = sNewList[maxLoc-maxR+1:maxLoc+maxR]
+        sFind = ''.join(sFind).replace('#', '')
+        
+        return sFind
